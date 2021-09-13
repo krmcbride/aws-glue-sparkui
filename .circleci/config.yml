@@ -1,0 +1,24 @@
+version: "2.1"
+jobs:
+  build:
+    machine:
+      image: ubuntu-1604:202007-01
+    steps:
+      - checkout
+      - run:
+          name: Log into the docker registry
+          command: docker login -u "${docker_username}" -p "${docker_password}"
+      - run:
+          name: Build
+          command: |
+            docker build -t krmcbride/aws-glue-sparkui:latest .
+      - run:
+          name: Push
+          command: |
+            docker push krmcbride/aws-glue-sparkui:latest
+workflows:
+  version: 2
+  build:
+    jobs:
+      - build:
+          filters: { branches: { only: [master] } }
